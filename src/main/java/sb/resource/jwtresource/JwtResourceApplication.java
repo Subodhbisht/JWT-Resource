@@ -14,14 +14,14 @@ public class JwtResourceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(JwtResourceApplication.class, args);
 	}
-	
-	@Bean
-	public PasswordEncoder getPasswordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
 
 	@Bean
 	public Mapper getMapper() {
 		return new DozerBeanMapper();
+	}
+	
+	@Bean
+	public PasswordEncoder getPasswordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 }
