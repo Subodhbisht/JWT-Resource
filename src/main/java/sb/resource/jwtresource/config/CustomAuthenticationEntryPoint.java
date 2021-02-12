@@ -21,7 +21,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 		final String expired = (String) request.getAttribute("expired");
 		String json="";
 		
-		System.out.println(expired+"-------->");
+		System.out.println(expired+"--------> Yaha aaya kya?");
 		
 //        PrintWriter writer = response.getWriter();
 //        writer.println("HTTP Status 401 - " + authException.getMessage());

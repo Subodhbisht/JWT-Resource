@@ -11,6 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import sb.resource.jwtresource.service.UserService;
 
 
@@ -18,14 +19,17 @@ import sb.resource.jwtresource.service.UserService;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-	
-	@Autowired
-	UserService userService;
-	
-	@Autowired
-	PasswordEncoder passwordEncoder;
+    @Autowired
+    JWTAuthorizationFilter jwtAuthorizationFilter;
+
+    @Autowired
+    CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -36,16 +40,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .userDetailsService(this.userDetailsService)
                 .passwordEncoder(passwordEncoder);
     }
-	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()//
-		.httpBasic().authenticationEntryPoint(customAuthenticationEntryPoint)
-		.and()
-		.addFilter(new JWTTokenAuthorizationFilter(authenticationManager(),userService))
-		.authorizeRequests()
-		.antMatchers(
-                HttpMethod.GET,
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .httpBasic().and()
+                .authorizeRequests().antMatchers(HttpMethod.GET,
                 "/",
                 "/v2/api-docs",           // swagger
                 "/webjars/**",            // swagger-ui webjars
@@ -56,12 +56,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/**/*.html",
                 "/**/*.css",
                 "/**/*.js"
-        ).permitAll()
-		.antMatchers(HttpMethod.GET).hasRole("ADMIN")
-		;
-	}
-	 
+        ).permitAll();
+        http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+    }
 
-		
+
 //	
 }

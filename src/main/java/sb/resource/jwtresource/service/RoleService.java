@@ -1,7 +1,6 @@
 package sb.resource.jwtresource.service;
 
 import java.util.List;
-
 import sb.resource.jwtresource.entity.Role;
 
 public interface RoleService {

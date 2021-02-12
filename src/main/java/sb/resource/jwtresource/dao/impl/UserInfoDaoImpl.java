@@ -18,7 +18,6 @@ public class UserInfoDaoImpl implements CustomUserInfoDao {
 	@PersistenceContext
 	EntityManager entityManager;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Role> findRoleByUserName(String userName) {
 		System.out.println("Inside findRoleByUserName---------");
