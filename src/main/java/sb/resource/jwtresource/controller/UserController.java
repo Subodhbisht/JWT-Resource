@@ -1,13 +1,12 @@
 package sb.resource.jwtresource.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,19 +14,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import sb.resource.jwtresource.entity.User;
-import sb.resource.jwtresource.exception.UserNotFoundException;
 import sb.resource.jwtresource.model.UserSearchCriteria;
-import sb.resource.jwtresource.service.UserService;
+import sb.resource.jwtresource.security.UserPrincipal;
 
 @RestController
 public class UserController {
 
+    @Qualifier("user-service")
     @Autowired
     WebClient webClientBuilder;
 
@@ -36,7 +33,9 @@ public class UserController {
 
     @PostMapping("/saveUser")
     public ResponseEntity<Mono<User>> saveUser(@RequestBody User user) {
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setCreatedBy(principal.getUser().getUserId());
         Mono<User> userMonouser = webClientBuilder.post()
                 .uri("/saveUser")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -48,7 +47,9 @@ public class UserController {
 
     @PutMapping("/updateUser")
     public ResponseEntity<Mono<User>> updateUser(@RequestBody User user) {
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setModifiedBy(principal.getUser().getUserId());
         Mono<User> userMonouser = webClientBuilder.post()
                 .uri("/updateUser")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

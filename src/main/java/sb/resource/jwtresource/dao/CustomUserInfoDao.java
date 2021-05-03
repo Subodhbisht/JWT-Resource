@@ -9,8 +9,4 @@ import sb.resource.jwtresource.entity.User;
 public interface CustomUserInfoDao {
 	
 	List<Role> findRoleByUserName(String userName);
-	
-	public Object delete(String userName);
-	
-	List<User> findUser(Map<String, String> searchCriteria);
 }

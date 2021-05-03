@@ -3,10 +3,8 @@ package sb.resource.jwtresource.dao.impl;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import sb.resource.jwtresource.Bean.UserResourceBean;
 import sb.resource.jwtresource.dao.CustomUserRoleDao;
 

@@ -26,25 +26,30 @@ import sb.resource.jwtresource.service.UserService;
 
 @Service(value = "userService")
 public class UserServiceImpl implements UserService {
-	
-	@Autowired
-	private UserInfoDao userRepository;
 
-	@Override
-	public UserPrincipal loadUserByUsername(String userName) throws UsernameNotFoundException {
-		System.out.println("InsideXXXXXXXXXXXXX "+userName);
-		User user = userRepository.findByUserName(userName) ;
-		if(user == null){
-			throw new UsernameNotFoundException("Invalid username or password.");
-		}
-		Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
-		List<Role> roles = userRepository.findRoleByUserName(userName);
-		for (Role role : roles) {
+    @Autowired
+    private UserInfoDao userRepository;
+
+    @Override
+    public UserPrincipal loadUserByUsername(String userName) throws UsernameNotFoundException {
+        System.out.println("InsideXXXXXXXXXXXXX " + userName);
+        User user = userRepository.findByUserName(userName);
+        if (user == null) {
+            throw new UsernameNotFoundException("Invalid username or password.");
+        }
+        Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+        List<Role> roles = userRepository.findRoleByUserName(userName);
+        roles.forEach((role) -> {
+            System.out.println("Role is " + role.getRoles());
+            GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.getRoles());
+            authorities.add(authority);
+        });
+		/*for (Role role : roles) {
 			System.out.println("Role is "+role.getRoles());
 			GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_"+role.getRoles());
 			authorities.add(authority);
-		}
-		return new UserPrincipal(user, authorities);
-	}
+		}*/
+        return new UserPrincipal(user, authorities);
+    }
 
 }

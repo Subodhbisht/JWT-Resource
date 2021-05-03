@@ -5,6 +5,7 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +43,7 @@ public class JwtResourceApplication {
 		return new BCryptPasswordEncoder();
 	}
 
-	@Bean
+	@Bean("user-service")
 	public WebClient getWebClient()
 	{
 		HttpClient httpClient = HttpClient.create()
